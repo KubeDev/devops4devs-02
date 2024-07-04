@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgre
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgre
+  template:
+    metadata:
+      labels: 
+        app: postgre
+    spec:
+      containers:
+        - name: postgre
+          image: postgres:13.1
+          env:
+          - name: POSTGRES_PASSWORD
+            value: Passw0rd2024!
+          - name: POSTGRES_USER
+            value: reviewfilmes
+          - name: POSTGRES_DB
+            value: reviewfilmes
+          ports:
+            - containerPort: 5432 
