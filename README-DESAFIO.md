@@ -27,3 +27,5 @@ docker push xenxem/review-filmes:v2
 
 12 - aplicação do manifesto
 kubectl apply -f k8s/deployment.yml
+
+13 - atualizando a aplicação no browser para verificar se a descrição mudou conforme imagem v2
