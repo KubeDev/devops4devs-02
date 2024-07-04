@@ -1,3 +1,5 @@
+# Postgres Deployment
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,3 +26,55 @@ spec:
             value: reviewfilmes
           ports:
             - containerPort: 5432 
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgre
+spec:
+  selector:
+    app: postgre
+  ports:
+    - port: 5432
+---
+# Application Deployment
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reviewfilmes
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: reviewfilmes
+  template:
+    metadata:
+      labels: 
+        app: reviewfilmes
+    spec:
+      containers:
+        - name: reviewfilmes
+          image: vandeilsonln/review-filmes:v1
+          env:
+          - name: ASPNETCORE_HTTP_PORTS
+            value: "8080"
+          - name: ConnectionStrings__DefaultConnection
+            value: "Host=postgre;Database=reviewfilmes;Username=reviewfilmes;Password=Passw0rd2024!"
+          ports:
+            - containerPort: 8080 
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: reviewfilmes
+spec:
+  selector:
+    app: reviewfilmes
+  ports:
+    - port: 80
+      targetPort: 8080
+      nodePort: 30000
+  type: NodePort
