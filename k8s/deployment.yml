@@ -47,7 +47,7 @@ kind: Deployment
 metadata: #metadados do objeto: nome, labels,
   name: reviewfilmes
 spec: # especificações do objeto (deployment), tudo que precisa ter e ser configurado
-  replicas: 10
+  replicas: 1
   selector: # critério de selção dos pods e replicaset que vai gerenciar
     matchLabels: # minha regra - labels precisam bater
      app: reviewfilmes
@@ -58,7 +58,7 @@ spec: # especificações do objeto (deployment), tudo que precisa ter e ser conf
     spec: #especificação do pod
       containers:
         - name: reviewfilmes
-          image: xenxem/review-filmes:v2
+          image: xenxem/review-filmes:v1
           env: 
           - name: ASPCORE_HTTP_PORTS
             value: "8080"
@@ -79,7 +79,7 @@ spec:
     - port: 80
       targetPort: 8080
       nodePort: 30000
-  type: NodePort  
+  type: LoadBalancer  
 
 
 
