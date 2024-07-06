@@ -1,0 +1,89 @@
+#toda vez que for criar um objeto no kubernetes
+#tenho que especificar esses 4 campos apiVersion, kind, metadata, spec
+
+# deployment de meu pod postgre
+apiVersion: apps/v1
+kind: Deployment
+metadata: #metadados do objeto: nome, labels,
+  name: postgre
+spec: # especificações do objeto (deployment), tudo que precisa ter e ser configurado
+  replicas: 1
+  selector: # critério de selção dos pods e replicaset que vai gerenciar
+    matchLabels: # minha regra - labels precisam bater
+     app: postgre
+  template: # estrutura do pod
+    metadata: #metadados do objeto (template): nome, labels,
+      labels: 
+        app: postgre # identificação do pod
+    spec: #especificação do pod
+      containers:
+        - name: postgre
+          image: postgres:13.1
+          env: 
+          - name: POSTGRES_PASSWORD
+            value: Passw0rd2024!
+          - name: POSTGRES_USER
+            value: reviewfilmes
+          - name: POSTGRES_DB
+            value: reviewfilmes
+          ports: 
+              - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgre
+spec:
+  selector:
+    app: postgre
+  ports:
+    - port: 5432  
+---
+
+
+# deployment  web
+apiVersion: apps/v1
+kind: Deployment
+metadata: #metadados do objeto: nome, labels,
+  name: reviewfilmes
+spec: # especificações do objeto (deployment), tudo que precisa ter e ser configurado
+  replicas: 1
+  selector: # critério de selção dos pods e replicaset que vai gerenciar
+    matchLabels: # minha regra - labels precisam bater
+     app: reviewfilmes
+  template: # estrutura do pod
+    metadata: #metadados do objeto (template): nome, labels,
+      labels: 
+        app: reviewfilmes # identificação do pod
+    spec: #especificação do pod
+      containers:
+        - name: reviewfilmes
+          image: xenxem/review-filmes:v1
+          env: 
+          - name: ASPCORE_HTTP_PORTS
+            value: "8080"
+          - name: ConnectionStrings__DefaultConnection
+            value: "Host=postgre;Database=reviewfilmes;Username=reviewfilmes;Password=Passw0rd2024!"
+          
+          ports: 
+              - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reviewfilmes
+spec:
+  selector:
+    app: reviewfilmes
+  ports:
+    - port: 80
+      targetPort: 8080
+      nodePort: 30000
+  type: LoadBalancer  
+
+
+
+
+    
+      
+  
