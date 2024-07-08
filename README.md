@@ -1,37 +1,30 @@
-# DevOps4Devs 02
+#realizacao do caminho com comandos e acoes
 
-## Aula 01
-### O projeto conversão de temperatura se encontra no link abaixo:
-
-[https://github.com/KubeDev/conversao-temperatura](https://github.com/KubeDev/conversao-temperatura)
-
-## Aula 02
-### Comando de criação do cluster Kubernetes com o K3D
-```bash
 k3d cluster create meucluster --servers 3 --agents 3 -p "30000:30000@loadbalancer"
-```
 
 
-## Aula 03
 
-### Link para a AWS:
+docker build -t 94rnerick/desafiodevops:v1 -f src/Review-Filmes.Web/Dockerfile src/
 
-[https://aws.amazon.com](https://aws.amazon.com)
+docker push 94rnerick/desafiodevops:v1
 
-### Link para instalação do AWS CLI:
+docker pull 94rnerick/desafiodevops:v1
 
-[https://aws.amazon.com/pt/cli](https://aws.amazon.com/pt/cli)
+#criar o arquivo deployment.yaml de acordo com o deploy e service
 
-### URL do template usado do Cloud Formation:
-```
-https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/amazon-eks-vpc-private-subnets.yaml
-```
+kubectl apply -f deployment.yaml
 
-# Aula 04
+acessar localhost:30000
 
-# Aula 05 
+Editar o arquivo _Layout.cshtml e salvar
 
-### Comando para obter a senha do Grafana
-```
-kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode
-```
+docker build -t 94rnerick/desafiodevops:v2 -f src/Review-Filmes.Web/Dockerfile src/
+
+docker push 94rnerick/desafiodevops:v2
+
+docker pull 94rnerick/desafiodevops:v2
+
+Editar o arquivo deployment.yaml na pasta src linha 56 image para nova imagem
+
+kubectl apply -f deployment.yaml && watch 'kubectl get pod' 
+#para observar a troca de versao 
